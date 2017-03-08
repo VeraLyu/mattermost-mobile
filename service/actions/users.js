@@ -25,7 +25,9 @@ export function login(loginId, password, mfaToken = '') {
     return async (dispatch, getState) => {
         dispatch({type: UsersTypes.LOGIN_REQUEST}, getState);
 
-        return Client.login(loginId, password, mfaToken).
+        const deviceId = getState().entities.general.deviceToken;
+
+        return Client.login(loginId, password, mfaToken, deviceId).
         then(async (data) => {
             let teamMembers;
             let preferences;
@@ -83,6 +85,11 @@ export function loadMe() {
             forceLogoutIfNecessary(error, dispatch);
             dispatch({type: UsersTypes.LOGIN_FAILURE, error}, getState);
             return;
+        }
+
+        const deviceId = getState().entities.general.deviceToken;
+        if (deviceId) {
+            Client.attachDevice(deviceId);
         }
 
         let preferences;
