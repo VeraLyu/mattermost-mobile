@@ -4,6 +4,9 @@
 import React from 'react';
 import {AppState} from 'react-native';
 import {IntlProvider} from 'react-intl';
+import DeviceInfo from 'react-native-device-info';
+
+import Client from 'service/client';
 import {Constants} from 'service/constants';
 import {getTranslations} from 'service/i18n';
 import EventEmitter from 'service/utils/event_emitter';
@@ -29,6 +32,7 @@ export default class Root extends React.Component {
     componentDidMount() {
         AppState.addEventListener('change', this.handleAppStateChange);
         EventEmitter.on(Constants.CONFIG_CHANGED, this.handleConfigChanged);
+        Client.setUserAgent(DeviceInfo.getUserAgent());
     }
 
     componentWillUnmount() {
